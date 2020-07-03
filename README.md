@@ -1,4 +1,4 @@
-# Focus-Dimmer
+# Focus Dimmer
 This is the repository for a Visual Studio Extension which is inspired by **[limelight.vim](https://github.com/junegunn/limelight.vim)** by **[junegunn](https://github.com/junegunn)** even if I have never used vim before. :smile:
 
 When enabled, this extension sets the color of the code as dimgray except for the block that is currently being worked on. 
