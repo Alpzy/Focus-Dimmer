@@ -87,7 +87,7 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FocusDimmerIconEdited.jpg">
+    <Content Include="Resources\FocusDimmerIconEdited.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
