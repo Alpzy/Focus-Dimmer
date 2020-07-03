@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidFocus_DimmerPackage">
+
+    <Groups>
+      <Group guid="guidFocus_DimmerPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidFocus_DimmerPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages" id="power" />
+        <Strings>
+          <ButtonText>Toggle Focus Dimmer</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+    <Bitmaps>
+
+      <Bitmap guid="guidImages" href="Resources\powerIcon.png" usedList="power"/>
+    </Bitmaps>
+  </Commands>
+  <KeyBindings>
+    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandId" editor="guidVSStd97" key1="L" mod1="ALT"/>
+  </KeyBindings>
+  <Symbols>
+    <GuidSymbol name="guidFocus_DimmerPackage" value="{43eb844c-abc7-4dca-842c-1309721e4bdc}" />
+    <GuidSymbol name="guidFocus_DimmerPackageCmdSet" value="{7cef4032-34d2-4bfd-9b60-b1ae5e3f0305}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="ToggleOnOffCommandId" value="0x0100" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{40f7c6da-49be-45c3-a044-721baeaffabc}" >
+      <IDSymbol name="power" value="1" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
