@@ -22,3 +22,6 @@ Actual footage* from gameplay:
 [![focusdimmerdemo.gif](https://s7.gifyu.com/images/focusdimmerdemo.gif)](https://gifyu.com/image/QKBK)
 
 *: Graphics may vary in the release version.
+
+## Known Bugs
+- Curly braces in strings will confuse the block recognition.
