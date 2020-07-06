@@ -24,9 +24,10 @@ namespace Focus_Dimmer.Tagger
         public DimTagger(ITextView view, ITextBuffer sourceBuffer, IClassificationTypeRegistryService registry)
         {
             m_View = view;
-            m_CaretPosition = view.Caret.Position;
+            m_CaretPosition = m_View.Caret.Position;
             m_SourceBuffer = sourceBuffer;
-            FocusDimmer.Toggled += UpdateOnToggle;
+            m_SourceBuffer.PostChanged += UpdateOnEvent;
+            FocusDimmer.Toggled += UpdateOnEvent;
             m_View.Caret.PositionChanged += CaretPositionChanged;
             m_Tag = BuildTag(registry, "Alpzy/DimFormatDefinition");
         }
@@ -42,14 +43,13 @@ namespace Focus_Dimmer.Tagger
             UpdateTags(GetDimSpans(m_CaretPosition.BufferPosition.Snapshot));
         }
 
-        void UpdateOnToggle(object sender, EventArgs e)
+        void UpdateOnEvent(object sender, EventArgs e)
         {
             UpdateTags(GetDimSpans(m_View.TextSnapshot));
         }
 
         private void UpdateTags(NormalizedSnapshotSpanCollection newSpans)
         {
-
             m_CurrentSpans = newSpans;
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(m_SourceBuffer.CurrentSnapshot, 0, m_SourceBuffer.CurrentSnapshot.Length)));
         }
@@ -177,7 +177,7 @@ namespace Focus_Dimmer.Tagger
             
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (spans == null || spans.Count == 0 || m_CurrentSpans == null ||m_CurrentSpans.Count == 0 || m_CurrentSpans[0].Snapshot != spans[0].Snapshot)
+            if (spans == null || spans.Count == 0 || m_CurrentSpans == null || m_CurrentSpans.Count == 0 || m_CurrentSpans[0].Snapshot != spans[0].Snapshot)
                 yield break;
             
             foreach (SnapshotSpan span in NormalizedSnapshotSpanCollection.Overlap(spans, m_CurrentSpans))
