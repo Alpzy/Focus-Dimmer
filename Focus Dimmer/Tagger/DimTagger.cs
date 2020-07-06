@@ -25,12 +25,9 @@ namespace Focus_Dimmer.Tagger
         {
             m_View = view;
             m_CaretPosition = view.Caret.Position;
-            m_CurrentSpans = GetBlockSpans(m_View.TextSnapshot);
             m_SourceBuffer = sourceBuffer;
-            FocusDimmer.Toggled += SetupSelectionChangedListener;
-            m_View.GotAggregateFocus += SetupSelectionChangedListener;
+            FocusDimmer.Toggled += UpdateOnToggle;
             m_View.Caret.PositionChanged += CaretPositionChanged;
-            m_View.LayoutChanged += ViewLayoutChanged;
             m_Tag = BuildTag(registry, "Alpzy/DimFormatDefinition");
         }
 
@@ -42,98 +39,147 @@ namespace Focus_Dimmer.Tagger
         void CaretPositionChanged(object sender, CaretPositionChangedEventArgs e)
         {
             m_CaretPosition = e.NewPosition;
-            UpdateAtCaretPosition(e.NewPosition);
+            UpdateTags(GetDimSpans(m_CaretPosition.BufferPosition.Snapshot));
         }
 
-        void UpdateAtCaretPosition(CaretPosition caretPosition)
+        void UpdateOnToggle(object sender, EventArgs e)
         {
-            UpdateTags(GetBlockSpans(caretPosition.BufferPosition.Snapshot));
-        }
-
-        private void SetupSelectionChangedListener(object sender, EventArgs e)
-        {
-            if (m_View != null)
-            {
-                m_View.LayoutChanged += ViewLayoutChanged;
-                m_View.GotAggregateFocus -= SetupSelectionChangedListener;
-            }
-        }
-
-        private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
-        {
-            UpdateTags(GetBlockSpans(e.NewSnapshot));
+            UpdateTags(GetDimSpans(m_View.TextSnapshot));
         }
 
         private void UpdateTags(NormalizedSnapshotSpanCollection newSpans)
         {
+
             m_CurrentSpans = newSpans;
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(m_SourceBuffer.CurrentSnapshot, 0, m_SourceBuffer.CurrentSnapshot.Length)));
         }
 
-        private NormalizedSnapshotSpanCollection GetBlockSpans(ITextSnapshot snapshot)
+        private SnapshotPoint GetBlockHeaderStartPoint(ITextSnapshotLine caretLine)
         {
-            var blockSpans = new List<SnapshotSpan>();
+            int closeBraceCount = 1;
 
-            if (!FocusDimmer.IsOn) 
+            var line = caretLine;
+            string lineText;
+            var snapshot = caretLine.Snapshot;
+
+            while (line.LineNumber - 1 > 0 && closeBraceCount > 0)
+            {
+                lineText = line.GetText();
+
+                if (lineText.Contains("}"))
+                {
+                    int index = lineText.IndexOf("}");
+                    while (index >= 0 && line.Start + index < m_View.Caret.Position.BufferPosition)
+                    {
+                        closeBraceCount++;
+                        index = lineText.IndexOf("}", index + 1);
+                    }
+                }
+
+                if (lineText.Contains("{"))
+                {
+                    int index = lineText.IndexOf("{");
+                    while (index >= 0 && line.Start + index < m_View.Caret.Position.BufferPosition)
+                    {
+                        closeBraceCount--;
+                        index = lineText.IndexOf("{", index + 1);
+                    }
+                }
+
+                if (closeBraceCount > 0)
+                {
+                    line = snapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                }
+
+            }
+
+            int startLineNumber = line.GetText().Trim().Length != 1 || line.LineNumber == 0 ? line.LineNumber : line.LineNumber - 1;
+            
+            return line.LineNumber == 1 || caretLine.Snapshot != m_View.TextSnapshot ? line.Start : caretLine.Snapshot.GetLineFromLineNumber(startLineNumber).Start;
+        }
+
+        private SnapshotPoint GetBlockEndPoint(ITextSnapshotLine caretLine)
+        {
+            int openBraceCount = 1;
+
+            var line = caretLine;
+            string lineText;
+            var snapshot = caretLine.Snapshot;
+            
+            while (line.LineNumber < snapshot.LineCount - 1 && openBraceCount > 0)
+            {
+                lineText = line.GetText();
+
+                if (lineText.Contains("{"))
+                {
+                    int index = lineText.IndexOf("{");
+                    while(index >= 0 && line.Start + index >= m_View.Caret.Position.BufferPosition)
+                    {
+                        openBraceCount++;
+                        index = lineText.IndexOf("{", index + 1);
+                    }
+                }
+
+                if (lineText.Contains("}"))
+                {
+                    int index = lineText.IndexOf("}");
+                    while(index >= 0 && line.Start + index >= m_View.Caret.Position.BufferPosition)
+                    {
+                        openBraceCount--;
+                        index = lineText.IndexOf("}", index + 1);
+                    }
+                }
+                
+                if(openBraceCount > 0)
+                {
+                    line = snapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                }
+
+            }
+
+            lineText = line.GetText();
+
+            return lineText.Contains("}") ? new SnapshotPoint(snapshot, line.Start + lineText.IndexOf("}") + 1) : new SnapshotPoint(snapshot, snapshot.Length - 1);
+        }
+
+        private SnapshotSpan GetCaretBlockSpan()
+        {
+            ITextSnapshotLine caretLine = m_View.TextSnapshot.GetLineFromLineNumber(m_CaretPosition.BufferPosition.GetContainingLine().LineNumber);
+            SnapshotPoint blockHeaderStartPoint = GetBlockHeaderStartPoint(caretLine);
+            SnapshotPoint blockEndPoint = m_View.TextSnapshot.GetLineFromLineNumber(m_View.TextSnapshot.LineCount - 1).End;
+
+            if (blockHeaderStartPoint != 0)
+            {
+                blockEndPoint = GetBlockEndPoint(caretLine);
+            }
+            
+            return new SnapshotSpan(blockHeaderStartPoint, blockEndPoint);
+        }
+
+        private NormalizedSnapshotSpanCollection GetDimSpans(ITextSnapshot snapshot)
+        {
+            if (!FocusDimmer.IsOn)
             {
                 SnapshotPoint pointZero = new SnapshotPoint(snapshot, 0);
                 SnapshotSpan spanZero = new SnapshotSpan(pointZero, pointZero);
                 return new NormalizedSnapshotSpanCollection(new List<SnapshotSpan>() { spanZero });
             }
 
-            Stack<SnapshotPoint> blockStack = new Stack<SnapshotPoint>();
-            foreach(var line in snapshot.Lines)
-            {
-                string lineText = line.GetText();
-                string lineTextTrimmed = lineText.Trim();
-
-                int startIndex = lineTextTrimmed.LastIndexOf('{');
-                int endIndex = lineTextTrimmed.LastIndexOf('}');
-
-                if (startIndex > -1)
-                {
-                    blockStack.Push(new SnapshotPoint(line.Snapshot, line.LineNumber - 1 == 0 ? line.Start + startIndex : snapshot.GetLineFromLineNumber(line.LineNumber - 1).Start));
-                }
-                if (endIndex > -1)
-                {
-                    blockSpans.Add(new SnapshotSpan(blockStack.Pop(), new SnapshotPoint(line.Snapshot, line.End)));
-                }
-            }
-
-            var caretBlockSpan = blockSpans.Where(x => x.Start.Position < m_CaretPosition.BufferPosition.Position && x.End.Position > m_CaretPosition.BufferPosition.Position)
-                .OrderBy(x => x.Length)
-                .FirstOrDefault();
-
             List<SnapshotSpan> result = new List<SnapshotSpan>();
 
-            //Avoiding unnecessary exceptions
-            try
-            {
-                result.Add(new SnapshotSpan(new SnapshotPoint(snapshot, 0), caretBlockSpan.Start));
-                result.Add(new SnapshotSpan(caretBlockSpan.End, new SnapshotPoint(snapshot, snapshot.Length - 1)));
-            }
-            catch
-            {
-            }
+            SnapshotSpan caretBlockSpan = GetCaretBlockSpan();
+
+            result.Add(new SnapshotSpan(new SnapshotPoint(snapshot, 0), caretBlockSpan.Start));
+            result.Add(new SnapshotSpan(caretBlockSpan.End, new SnapshotPoint(snapshot, snapshot.Length)));
 
             return new NormalizedSnapshotSpanCollection(result);
         }
             
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (spans == null || spans.Count == 0 || m_CurrentSpans.Count == 0)
+            if (spans == null || spans.Count == 0 || m_CurrentSpans == null ||m_CurrentSpans.Count == 0 || m_CurrentSpans[0].Snapshot != spans[0].Snapshot)
                 yield break;
             
-            //Avoiding unnecessary exceptions
-            try
-            {
-                NormalizedSnapshotSpanCollection.Overlap(spans, m_CurrentSpans);
-            }
-            catch
-            {
-                yield break;
-            }
-
             foreach (SnapshotSpan span in NormalizedSnapshotSpanCollection.Overlap(spans, m_CurrentSpans))
             {
                 yield return new TagSpan<ClassificationTag>(span, m_Tag);
