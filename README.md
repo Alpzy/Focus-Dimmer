@@ -12,16 +12,18 @@ This might help to reduce eye stress and increase productivity while coding.
 
 **Installation/Building guide**: [MSDN Documentation](https://docs.microsoft.com/en-us/visualstudio/extensibility/walkthrough-publishing-a-visual-studio-extension?view=vs-2019)
 
-
 ## Features
 You can easily toggle it on or off by using the default keyboard shortcut (ALT+L) or click on the Toggle Focus Dimmer option under the tools menu.
 
 ## Fancy Demo
 Actual footage* from gameplay:
 
-[![focusdimmerdemo.gif](https://s7.gifyu.com/images/focusdimmerdemo.gif)](https://gifyu.com/image/QKBK)
+DimGray Mode:
+
+![focusdimmerdemo.gif](https://s7.gifyu.com/images/focusdimmerdemo.gif)
+
+Transparent mode:
+
+![focusdimmerdemo2.gif](https://s7.gifyu.com/images/focusdimmerdemo2.gif)
 
 *: Graphics may vary in the release version.
-
-## Known Bugs
-- Curly braces in strings will confuse the block recognition.
