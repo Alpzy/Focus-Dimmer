@@ -2,12 +2,12 @@
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 
-namespace Focus_Dimmer.Classifier
+namespace Focus_Dimmer.Classifiers
 {
-    internal static class DimFormatClassifierTypeDefinition
+    internal static class TransparentFormatClassifierTypeDefinition
     {
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("Alpzy/DimFormatDefinition")]
+        [Name("Alpzy/Transparent")]
         private static ClassificationTypeDefinition typeDefinition;
     }
 }

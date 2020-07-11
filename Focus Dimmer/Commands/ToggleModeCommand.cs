@@ -1,18 +1,14 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+using Focus_Dimmer.Enums;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace Focus_Dimmer
+namespace Focus_Dimmer.Commands
 {
-    public sealed class ToggleOnOffCommand
+    public sealed class ToggleModeCommand
     {
-        public const int CommandId = 0x0100;
+        public const int CommandId = 0x0101;
 
         public static readonly Guid CommandSet = new Guid("7cef4032-34d2-4bfd-9b60-b1ae5e3f0305");
 
@@ -20,7 +16,7 @@ namespace Focus_Dimmer
 
         public EventHandler toggled;
 
-        private ToggleOnOffCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private ToggleModeCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -29,7 +25,7 @@ namespace Focus_Dimmer
             commandService.AddCommand(menuItem);
         }
 
-        public static ToggleOnOffCommand Instance
+        public static ToggleModeCommand Instance
         {
             get;
             private set;
@@ -45,17 +41,15 @@ namespace Focus_Dimmer
 
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in ToggleOnOffCommand's constructor requires
-            // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new ToggleOnOffCommand(package, commandService);
+            Instance = new ToggleModeCommand(package, commandService);
         }
 
         private void onToggled(object sender, EventArgs e)
         {
-            FocusDimmer.IsOn = !FocusDimmer.IsOn;
+            FocusDimmer.Mode = FocusDimmer.Mode == Modes.DimGray ? Modes.Transparent : Modes.DimGray;
         }
     }
 }

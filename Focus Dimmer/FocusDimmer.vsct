@@ -8,33 +8,40 @@
   <Commands package="guidFocus_DimmerPackage">
 
     <Groups>
-      <Group guid="guidFocus_DimmerPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
     </Groups>
 
     <Buttons>
-      <Button guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidFocus_DimmerPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandID" priority="0x0100" type="Button">
+        <Parent guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" />
         <Icon guid="guidImages" id="power" />
         <Strings>
-          <ButtonText>Toggle Focus Dimmer</ButtonText>
+          <ButtonText>Toggle Focus Dimmer On/Off</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidFocus_DimmerPackageCmdSet" id="ToggleModeCommandID" priority="0x0100" type="Button">
+        <Parent guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" />
+        <Strings>
+          <ButtonText>Toggle Focus Dimmer Mode</ButtonText>
         </Strings>
       </Button>
     </Buttons>
     <Bitmaps>
-
       <Bitmap guid="guidImages" href="Resources\powerIcon.png" usedList="power"/>
     </Bitmaps>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandId" editor="guidVSStd97" key1="L" mod1="ALT"/>
+    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandID" editor="guidVSStd97" key1="L" mod1="ALT"/>
+    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleModeCommandID" editor="guidVSStd97" key1="M" mod1="ALT"/>
   </KeyBindings>
   <Symbols>
     <GuidSymbol name="guidFocus_DimmerPackage" value="{43eb844c-abc7-4dca-842c-1309721e4bdc}" />
     <GuidSymbol name="guidFocus_DimmerPackageCmdSet" value="{7cef4032-34d2-4bfd-9b60-b1ae5e3f0305}">
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="ToggleOnOffCommandId" value="0x0100" />
+      <IDSymbol name="FocusDimmerMenuGroup" value="0x1020" />
+      <IDSymbol name="ToggleOnOffCommandID" value="0x0100" />
+      <IDSymbol name="ToggleModeCommandID" value="0x0101" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{40f7c6da-49be-45c3-a044-721baeaffabc}" >

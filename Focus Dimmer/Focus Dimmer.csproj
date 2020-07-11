@@ -46,13 +46,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classifier\DimFormatDefinition.cs" />
+    <Compile Include="Classifiers\DimGray\DimGrayFormatDefinition.cs" />
+    <Compile Include="Classifiers\Transparent\TransparentFormatClassifierTypeDefinition.cs" />
+    <Compile Include="Classifiers\Transparent\TransparentFormatDefinition.cs" />
+    <Compile Include="Commands\ToggleModeCommand.cs" />
+    <Compile Include="Enums\Modes.cs" />
     <Compile Include="Tagger\DimTagger.cs" />
     <Compile Include="Tagger\DimTaggerProvider.cs" />
-    <Compile Include="Classifier\DimFormatClassifierTypeDefinition.cs" />
+    <Compile Include="Classifiers\DimGray\DimGrayFormatClassifierTypeDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FocusDimmer.cs" />
-    <Compile Include="ToggleOnOffCommand.cs" />
+    <Compile Include="Commands\ToggleOnOffCommand.cs" />
+    <Compile Include="Utils\CodeBlockUtils.cs" />
+    <Compile Include="Utils\TagUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
