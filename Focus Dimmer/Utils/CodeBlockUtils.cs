@@ -26,13 +26,12 @@ namespace Focus_Dimmer.Utils
             var aggregator = tagAggregatorService.CreateTagAggregator<IClassificationTag>(view);
 
             var line = caretLine;
-            string lineText;
 
             int closeBraceCount = 1; //Using this like a stack.
             
             while (line.LineNumber - 1 > 0 && closeBraceCount > 0)
             {
-                lineText = line.GetText();
+                string lineText = line.GetText();
 
                 if (lineText.Contains("}"))
                 {
@@ -71,7 +70,9 @@ namespace Focus_Dimmer.Utils
                 ? line.LineNumber 
                 : line.LineNumber - 1;
 
-            return line.LineNumber == 1 || caretLine.Snapshot != view.TextSnapshot ? line.Start : caretLine.Snapshot.GetLineFromLineNumber(startLineNumber).Start;
+            return line.LineNumber == 1 || caretLine.Snapshot != view.TextSnapshot 
+                ? line.Start 
+                : caretLine.Snapshot.GetLineFromLineNumber(startLineNumber).Start;
         }
 
         private static SnapshotPoint GetBlockEndPoint(ITextView view, ITextSnapshotLine caretLine, IViewTagAggregatorFactoryService tagAggregatorService)
@@ -113,6 +114,7 @@ namespace Focus_Dimmer.Utils
                         index = lineText.IndexOf("}", index + 1);
                     }
                 }
+
                 if (openBraceCount > 0)
                 {
                     line = snapshot.GetLineFromLineNumber(line.LineNumber + 1);
@@ -122,7 +124,9 @@ namespace Focus_Dimmer.Utils
 
             lineText = line.GetText();
 
-            return lineText.Contains("}") ? new SnapshotPoint(snapshot, line.Start + lineText.IndexOf("}") + 1) : new SnapshotPoint(snapshot, snapshot.Length - 1);
+            return lineText.Contains("}") 
+                ? new SnapshotPoint(snapshot, line.Start + lineText.IndexOf("}") + 1) 
+                : new SnapshotPoint(snapshot, snapshot.Length - 1);
         }
     }
 }

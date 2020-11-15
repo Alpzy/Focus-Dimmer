@@ -15,8 +15,8 @@ namespace Focus_Dimmer
     {
         public const string PackageGuidString = "43eb844c-abc7-4dca-842c-1309721e4bdc";
 
-        private static bool isOn = false;
-        private static Modes mode = Modes.DimGray;
+        private static bool isOn = Properties.Settings.Default.defaultOnOff;
+        private static Modes mode = (Modes) Properties.Settings.Default.defaultDimmingMode;
 
         public static bool IsOn { get { return isOn; } set{ isOn = value;  ToggledOnOff?.Invoke(new Object(), new EventArgs()); } }
         public static Modes Mode { get { return mode; } set { mode = value; ToggledMode?.Invoke(new Object(), new EventArgs()); } }
@@ -30,6 +30,7 @@ namespace Focus_Dimmer
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await ToggleOnOffCommand.InitializeAsync(this);
             await ToggleModeCommand.InitializeAsync(this);
+            await Focus_Dimmer.Commands.DefaultSettingsCommand.InitializeAsync(this);
         }
 
         #endregion

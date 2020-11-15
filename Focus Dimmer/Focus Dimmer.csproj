@@ -49,8 +49,20 @@
     <Compile Include="Classifiers\DimGray\DimGrayFormatDefinition.cs" />
     <Compile Include="Classifiers\Transparent\TransparentFormatClassifierTypeDefinition.cs" />
     <Compile Include="Classifiers\Transparent\TransparentFormatDefinition.cs" />
+    <Compile Include="Commands\DefaultSettingsCommand.cs" />
     <Compile Include="Commands\ToggleModeCommand.cs" />
     <Compile Include="Enums\Modes.cs" />
+    <Compile Include="FormsViews\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsViews\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Tagger\DimTagger.cs" />
     <Compile Include="Tagger\DimTaggerProvider.cs" />
     <Compile Include="Classifiers\DimGray\DimGrayFormatClassifierTypeDefinition.cs" />
@@ -61,6 +73,11 @@
     <Compile Include="Utils\TagUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -93,11 +110,18 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\defaultSettingsIcon.png" />
     <Content Include="Resources\FocusDimmerIconEdited.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\powerIcon.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="FormsViews\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

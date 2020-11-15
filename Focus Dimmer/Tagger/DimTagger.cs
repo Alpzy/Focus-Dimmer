@@ -39,7 +39,7 @@ namespace Focus_Dimmer.Tagger
 
         private static ClassificationTag BuildTag(IClassificationTypeRegistryService classificationRegistry, string typeName)
         {
-            return new ClassificationTag(classificationRegistry.GetClassificationType(typeName));
+             return new ClassificationTag(classificationRegistry.GetClassificationType(typeName));
         }
 
         void CaretPositionChanged(object sender, CaretPositionChangedEventArgs e)
@@ -55,10 +55,18 @@ namespace Focus_Dimmer.Tagger
 
         private void UpdateTags(NormalizedSnapshotSpanCollection newSpans)
         {
-            m_Tag = FocusDimmer.Mode != Modes.DimGray ? BuildTag(m_Registry, "Alpzy/Transparent") : BuildTag(m_Registry, "Alpzy/DimGray");
+            m_Tag = FocusDimmer.Mode == Modes.DimGray 
+                ? BuildTag(m_Registry, "Alpzy/DimGray") 
+                : BuildTag(m_Registry, "Alpzy/Transparent");
+
             m_CurrentSpans = newSpans;
 
-            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(m_SourceBuffer.CurrentSnapshot, 0, m_SourceBuffer.CurrentSnapshot.Length)));
+            TagsChanged?.Invoke(
+                this, 
+                new SnapshotSpanEventArgs(
+                    new SnapshotSpan(m_SourceBuffer.CurrentSnapshot, 0, m_SourceBuffer.CurrentSnapshot.Length)
+                    )
+                );
         }
 
         private NormalizedSnapshotSpanCollection GetDimSpans(ITextSnapshot snapshot)

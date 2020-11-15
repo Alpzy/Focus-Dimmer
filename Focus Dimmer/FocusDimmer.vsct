@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <Commands package="guidFocus_DimmerPackage">
 
     <Groups>
       <Group guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
     </Groups>
 
     <Buttons>
       <Button guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandID" priority="0x0100" type="Button">
         <Parent guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" />
-        <Icon guid="guidImages" id="power" />
+        <Icon guid="guidPowerImage" id="power" />
         <Strings>
           <ButtonText>Toggle Focus Dimmer On/Off</ButtonText>
         </Strings>
@@ -27,14 +27,22 @@
           <ButtonText>Toggle Focus Dimmer Mode</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidFocus_DimmerPackageCmdSet" id="DefaultSettingsCommandID" priority="0x0100" type="Button">
+        <Parent guid="guidFocus_DimmerPackageCmdSet" id="FocusDimmerMenuGroup" />
+        <Icon guid="guidSettingsImage" id="settings" />
+        <Strings>
+          <ButtonText>Edit Focus Dimmer Default Settings</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\powerIcon.png" usedList="power"/>
+      <Bitmap guid="guidPowerImage" href="Resources\powerIcon.png" usedList="power" />
+      <Bitmap guid="guidSettingsImage" href="Resources\defaultSettingsIcon.png" usedList="settings" />
     </Bitmaps>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandID" editor="guidVSStd97" key1="L" mod1="ALT"/>
-    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleModeCommandID" editor="guidVSStd97" key1="M" mod1="ALT"/>
+    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleOnOffCommandID" editor="guidVSStd97" key1="L" mod1="ALT" />
+    <KeyBinding guid="guidFocus_DimmerPackageCmdSet" id="ToggleModeCommandID" editor="guidVSStd97" key1="M" mod1="ALT" />
   </KeyBindings>
   <Symbols>
     <GuidSymbol name="guidFocus_DimmerPackage" value="{43eb844c-abc7-4dca-842c-1309721e4bdc}" />
@@ -42,10 +50,15 @@
       <IDSymbol name="FocusDimmerMenuGroup" value="0x1020" />
       <IDSymbol name="ToggleOnOffCommandID" value="0x0100" />
       <IDSymbol name="ToggleModeCommandID" value="0x0101" />
+      <IDSymbol name="DefaultSettingsCommandID" value="0x0102" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{40f7c6da-49be-45c3-a044-721baeaffabc}" >
+    <GuidSymbol name="guidPowerImage" value="{40f7c6da-49be-45c3-a044-721baeaffabc}">
       <IDSymbol name="power" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol name="guidSettingsImage" value="{4d71021f-0730-4d02-b3e2-568b55b8a97c}" >
+      <IDSymbol name="settings" value="1" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>
